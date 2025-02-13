@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Quiz Bank</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #upload-section, #file-list {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    input[type="file"] {
+      margin: 10px 0;
+    }
+    button {
+      background: #5a67d8;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #434190;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 10px 0;
+    }
+    a {
+      color: #3182ce;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>School Quiz Bank</h1>
+  
+  <div id="upload-section" style="display:none;">
+    <h2>Upload a PDF</h2>
+    <form id="upload-form">
+      <input type="file" id="file-input" accept=".pdf" required>
+      <button type="submit">Upload PDF</button>
+    </form>
+  </div>
+
+  <div id="file-list" style="display:none;">
+    <h2>Available PDFs</h2>
+    <ul id="file-display"></ul>
+  </div>
+
+  <script>
+    const password = "quiz123"; // Change this to your desired password
+
+    function authenticateUser() {
+      let userInput = prompt("Enter the password to access the quiz bank:");
+      if (userInput === password) {
+        document.getElementById('upload-section').style.display = 'block';
+        document.getElementById('file-list').style.display = 'block';
+      } else {
+        alert("Incorrect password. Access denied.");
+      }
+    }
+
+    authenticateUser();
+
+    const fileList = [];
+
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+      if (file) {
+        fileList.push(file.name);
+        displayFiles();
+        fileInput.value = '';
+      }
+    });
+
+    function displayFiles() {
+      const fileDisplay = document.getElementById('file-display');
+      fileDisplay.innerHTML = '';
+      fileList.forEach((fileName, index) => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<a href="#" onclick="alert('Download ${fileName} (mock link)')">${fileName}</a>`;
+        fileDisplay.appendChild(listItem);
+      });
+    }
+  </script>
+
+</body>
+</html>
 
