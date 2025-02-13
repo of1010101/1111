@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CU Boulder Study Bank</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #ffffff;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+    #upload-section, #file-list {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    input[type="file"], input[type="text"] {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #444;
+      border-radius: 6px;
+      background-color: #2e2e2e;
+      color: #f0f0f0;
+    }
+    button {
+      background: #5a67d8;
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #434190;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 5px 0;
+    }
+    a {
+      color: #42a5f5;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    h2 {
+      color: #ffffff;
+      font-size: 1.8em;
+      margin-bottom: 10px;
+    }
+    h3 {
+      color: #f0f0f0;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .folder-content {
+      display: none;
+      padding-left: 20px;
+      border-left: 3px solid;
+      margin-top: 10px;
+      background-color: #2a2a2a;
+      border-radius: 6px;
+      padding: 10px;
+    }
+    .folder-toggle {
+      display: block;
+      color: #ff9800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CU Boulder Study Bank</h1>
+  
+  <div id="upload-section" style="display:none;">
+    <h2>Upload a PDF</h2>
+    <form id="upload-form">
+      <label for="folder-name">Enter Course Name (required):</label>
+      <input type="text" id="folder-name" placeholder="e.g., Math, Science" required>
+      <label for="file-name">Enter File Name (required):</label>
+      <input type="text" id="file-name" placeholder="e.g., Chapter1.pdf" required>
+      <label for="file-input">Select a PDF to upload:</label>
+      <input type="file" id="file-input" accept=".pdf" required>
+      <button type="submit">Upload PDF</button>
+    </form>
+  </div>
+
+  <div id="file-list" style="display:none;">
+    <h2>Courses</h2>
+    <div id="folders"></div>
+  </div>
+
+  <script>
+    const password = "2171"; // Change this to your desired password
+    const fileSystem = {}; // Simulates a file storage system organized by folders
+    const colors = ["#ff9800", "#4caf50", "#2196f3", "#9c27b0", "#e91e63", "#00bcd4"];
+
+    function authenticateUser() {
+      let userInput = prompt("Enter the password to access:");
+      if (userInput === password) {
+        document.getElementById('upload-section').style.display = 'block';
+        document.getElementById('file-list').style.display = 'block';
+      } else {
+        alert("Incorrect password. Refresh the page to try again.");
+      }
+    }
+
+    authenticateUser();
+
+    document.getElementById('upload-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const folderName = document.getElementById('folder-name').value.trim();
+      const fileName = document.getElementById('file-name').value.trim();
+      const fileInput = document.getElementById('file-input');
+      const file = fileInput.files[0];
+
+      if (folderName && fileName && file) {
+        if (!fileSystem[folderName]) {
+          fileSystem[folderName] = [];
+        }
+        fileSystem[folderName].push({ name: fileName, url: URL.createObjectURL(file) }); // Store file with a download URL
+        displayFiles();
+        fileInput.value = '';
+        document.getElementById('folder-name').value = '';
+        document.getElementById('file-name').value = '';
+      } else {
+        alert("Please fill in all fields and select a PDF file.");
+      }
+    });
+
+    function displayFiles() {
+      const foldersDiv = document.getElementById('folders');
+      foldersDiv.innerHTML = '';
+      let colorIndex = 0;
+
+      for (const folder in fileSystem) {
+        const folderSection = document.createElement('div');
+        const folderColor = colors[colorIndex % colors.length];
+        colorIndex++;
+
+        folderSection.innerHTML = `<h3 class="folder-toggle" onclick="toggleFolder('${folder}')" style="border-left-color: ${folderColor};">${folder}</h3><div class="folder-content" id="folder-${folder}" style="border-left-color: ${folderColor};"></div>`;
+        foldersDiv.appendChild(folderSection);
+
+        const folderList = document.getElementById(`folder-${folder}`);
+        fileSystem[folder].forEach(file => {
+          const listItem = document.createElement('li');
+          listItem.innerHTML = `<a href="${file.url}" download="${file.name}">${file.name}</a>`;
+          folderList.appendChild(listItem);
+        });
+      }
+    }
+
+    function toggleFolder(folder) {
+      const folderContent = document.getElementById(`folder-${folder}`);
+      folderContent.style.display = folderContent.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+
+</body>
+</html>
