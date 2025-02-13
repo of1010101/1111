@@ -54,7 +54,7 @@
 </head>
 <body>
 
-  <h1>School Quiz Bank</h1>
+  <h1>CU Boulder School Bank</h1>
   
   <div id="upload-section" style="display:none;">
     <h2>Upload a PDF</h2>
@@ -70,10 +70,10 @@
   </div>
 
   <script>
-    const password = "quiz123"; // Change this to your desired password
+    const password = "pdt2171"; // Change this to your desired password
 
     function authenticateUser() {
-      let userInput = prompt("Enter the password to access the quiz bank:");
+      let userInput = prompt("Enter the password to access:");
       if (userInput === password) {
         document.getElementById('upload-section').style.display = 'block';
         document.getElementById('file-list').style.display = 'block';
